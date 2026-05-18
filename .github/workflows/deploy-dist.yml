@@ -1,0 +1,11 @@
+name: Deploy React App to GitHub Pages # Name of Workflow
+on: ["push", "workflow_dispatch"] # When Workflow should trigger
+jobs: # Workflow will perform some task so those task will be written inside jobs
+    tests:
+        runs-on: ubuntu-latest
+        steps:
+            - name: "Clone Code into Remote Runner"
+              run: |
+                  echo "Cloning Repo"
+                  echo "${{toJSON(github)}}" # toJSON is used for pretty-print Object. Something like JSON.stringify
+                  git clone "${{github.repositoryUrl}}" # github is context available into actions
