@@ -1,11 +1,28 @@
 name: Deploy React App to GitHub Pages # Name of Workflow
 on: ["push", "workflow_dispatch"] # When Workflow should trigger
 jobs: # Workflow will perform some task so those task will be written inside jobs
-    tests:
+    deploy:
         runs-on: ubuntu-latest
         steps:
             - name: "Clone Code into Remote Runner"
-              run: |
-                  echo "Cloning Repo"
-                  echo "${{toJSON(github)}}" # toJSON is used for pretty-print Object. Something like JSON.stringify
-                  git clone "${{github.repositoryUrl}}" # github is context available into actions
+              uses: actions/checkout@v6 # Predefined Actions from Github actions marketplace
+            #   run: |
+            #       echo "Cloning Repo"
+            #       echo "${{toJSON(github)}}" # toJSON is used for pretty-print Object. Something like JSON.stringify
+            #       git clone "https://github.com/${{github.repository}}.git" # github is context available into actions
+
+            - name: "Setup NodeJS"
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 20
+
+            - name: "Install all dependecies"
+              run: "pnpm ci" # Running Clean Install so we don't update/upgrade any package version
+
+            - name: "Create Build"
+              run: "pnpm run build"
+
+            - name: "Deploy"
+              uses: JamesIves/github-pages-deploy-action@v4
+              with:
+                  folder: dist
