@@ -31,7 +31,7 @@ jobs: # Workflow will perform some task so those task will be written inside job
               run: "npm i -g pnpm"
 
             - name: "Install all dependecies"
-              run: "pnpm ci" # Running Clean Install so we don't update/upgrade any package version
+              run: "pnpm install" # Running Clean Install so we don't update/upgrade any package version
 
             - name: "Cache NPM Packages"
               uses: actions/cache@v4
