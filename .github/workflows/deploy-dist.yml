@@ -27,6 +27,8 @@ jobs: # Workflow will perform some task so those task will be written inside job
               uses: actions/setup-node@v6
               with:
                   node-version: 20
+            - name: "Setup PNPM"
+              run: "npm i -g pnpm"
 
             - name: "Install all dependecies"
               run: "pnpm ci" # Running Clean Install so we don't update/upgrade any package version
