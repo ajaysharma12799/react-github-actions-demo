@@ -1,8 +1,8 @@
-# name: Greetings # Name of Workflow
-# on: push # When Workflow should trigger
-# jobs: # Workflow will perform some task so those task will be written inside jobs
-#     greet: # Job Name
-#         runs-on: ubuntu-latest # Machine where our code will be running
-#         steps:
-#             - name: "Hello World!" # Step Name
-#               run: echo "Hello World!" # Command to run in the step
+name: Greetings # Name of Workflow
+on: push # When Workflow should trigger
+jobs: # Workflow will perform some task so those task will be written inside jobs
+    greet: # Job Name
+        runs-on: ubuntu-latest # Machine where our code will be running
+        steps:
+            - name: "Hello World!" # Step Name
+              run: echo "Hello World!" # Command to run in the step
