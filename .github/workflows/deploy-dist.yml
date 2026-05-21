@@ -1,49 +1,49 @@
-name: Deploy React App to GitHub Pages # Name of Workflow
-# on: ["push", "workflow_dispatch"] # When Workflow should trigger
-on:
-  push: # Adding filter so code only runs when code is pushed to below mentioned branches
-    branches:
-      - main
-      - integration
-      - staging
-      - production
-    paths-ignore:
-      - ".github/workflows"
-      - "README.md"
-  workflow_dispatch:
+# name: Deploy React App to GitHub Pages # Name of Workflow
+# # on: ["push", "workflow_dispatch"] # When Workflow should trigger
+# on:
+#   push: # Adding filter so code only runs when code is pushed to below mentioned branches
+#     branches:
+#       - main
+#       - integration
+#       - staging
+#       - production
+#     paths-ignore:
+#       - ".github/workflows"
+#       - "README.md"
+#   workflow_dispatch:
 
-jobs: # Workflow will perform some task so those task will be written inside jobs
-    deploy:
-        runs-on: ubuntu-latest
-        steps:
-            - name: "Clone Code into Remote Runner"
-              uses: actions/checkout@v6 # Predefined Actions from Github actions marketplace
-            #   run: |
-            #       echo "Cloning Repo"
-            #       echo "${{toJSON(github)}}" # toJSON is used for pretty-print Object. Something like JSON.stringify
-            #       git clone "https://github.com/${{github.repository}}.git" # github is context available into actions
+# jobs: # Workflow will perform some task so those task will be written inside jobs
+#     deploy:
+#         runs-on: ubuntu-latest
+#         steps:
+#             - name: "Clone Code into Remote Runner"
+#               uses: actions/checkout@v6 # Predefined Actions from Github actions marketplace
+#             #   run: |
+#             #       echo "Cloning Repo"
+#             #       echo "${{toJSON(github)}}" # toJSON is used for pretty-print Object. Something like JSON.stringify
+#             #       git clone "https://github.com/${{github.repository}}.git" # github is context available into actions
 
-            - name: "Setup NodeJS"
-              uses: actions/setup-node@v6
-              with:
-                  node-version: 20
-            - name: "Setup PNPM"
-              run: "npm i -g pnpm"
+#             - name: "Setup NodeJS"
+#               uses: actions/setup-node@v6
+#               with:
+#                   node-version: 20
+#             - name: "Setup PNPM"
+#               run: "npm i -g pnpm"
 
-            - name: "Install all dependecies"
-              run: "pnpm install" # Running Clean Install so we don't update/upgrade any package version
+#             - name: "Install all dependecies"
+#               run: "pnpm install" # Running Clean Install so we don't update/upgrade any package version
 
-            - name: "Cache NPM Packages"
-              uses: actions/cache@v4
-              with:
-                path: "~/.npm" # runner is a context which refers to machin
-                key: "${{runner.os}}-node-${{ hashFiles('**/package-lock.json') }}" # hashFiles help us create unique SHA-256 hash for some set of files
+#             - name: "Cache NPM Packages"
+#               uses: actions/cache@v4
+#               with:
+#                 path: "~/.npm" # runner is a context which refers to machin
+#                 key: "${{runner.os}}-node-${{ hashFiles('**/package-lock.json') }}" # hashFiles help us create unique SHA-256 hash for some set of files
                 
 
-            - name: "Create Build"
-              run: "pnpm run build"
+#             - name: "Create Build"
+#               run: "pnpm run build"
 
-            - name: "Deploy"
-              uses: JamesIves/github-pages-deploy-action@v4
-              with:
-                  folder: dist
+#             - name: "Deploy"
+#               uses: JamesIves/github-pages-deploy-action@v4
+#               with:
+#                   folder: dist

@@ -1,69 +1,58 @@
-name: "Deploy React App on Github Pages"
+name: Deploy React App on GitHub Pages
+
 on:
-    push:
-        branches:
-            - main
-    workflow_dispatch:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-    setup:
-        runs-on: ubuntu-latest
-        steps:
-            - name: "Setup Node Env for Vite App"
-              uses: actions/setup-node@v6
-            
-            - name: "Install PNPM"
-              run: "npm i -g pnpm"
+  build:
+    runs-on: ubuntu-latest
 
-            - name: "Clone Repo into Runner Machine"
-              uses: actions/checkout@v6 
-            
-            - name: "Cache node_modules"
-              uses: actions/cache@v4
-              with:
-                path: "~/.npm"
-                key: "${{runner.os}}-node-${{ hashFiles('**/package-lock.json') }}"
-    
-    test:
-        runs-on: ubuntu-latest
-        steps:
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
 
-            - name: "Clone Repo into Runner Machine"
-              uses: actions/checkout@v6 
-            - name: "Test Vite App"
-              run: "npm run test"
-    
-    build:
-        runs-on: ubuntu-latest
-        steps:
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
 
-            # - name: "Clone Repo into Runner Machine"
-            #   uses: actions/checkout@v6 
-              
-            - name: "Build Vite App"
-              run: "npm run build"
+      - name: Install PNPM
+        run: npm install -g pnpm
 
-            - name: "Upload Vite App Artifact"
-              uses: actions/upload-artifact@v7
-              with:
-                name: "Vite Production App"
-                path: "dist/"
-        
-    download_artifact:
-        runs-on: ubuntu-latest
-        steps:
-            - name: "Download Vite Artifact"
-              uses: actions/download-artifact@v8
-              with:
-                name: "Vite Production App"
-                path: "dist/"
+      - name: Install Dependencies
+        run: pnpm install
 
-    deploy:
-        runs-on: ubuntu-latest
-        environment:
-            name: github-pages
-            url: ${{steps.deployment.outputs.page_url}} # 
-        steps:
-            - name: "Deploy to Github Pages"
-              id: "deployment"
-              uses: actions/deploy-pages@v4
+      - name: Build App
+        run: pnpm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
